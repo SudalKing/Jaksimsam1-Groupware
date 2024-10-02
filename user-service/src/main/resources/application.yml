@@ -1,0 +1,122 @@
+spring:
+  application:
+    name: user-service
+  profiles:
+    active: local
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+
+---
+
+# 로컬
+spring:
+  config:
+    activate:
+      on-profile: local
+  datasource:
+    url: ~
+    driver-class-name: org.postgresql.Driver
+    username: ~
+    password: ~
+    hikari:
+      maximum-pool-size: 5
+      minimum-idle: 5
+      max-lifetime: 1200000
+      connection-timeout: 10000
+  data:
+    redis:
+      host: 127.0.0.1
+      port: 6379
+
+server:
+  port: 8080
+
+logging:
+  level:
+    root: info
+    com.zaxxer.hikari.HikariConfig: DEBUG
+    com.zaxxer.hikari: TRACE
+    jdbc:
+      sql-only: off
+      sql-timing: debug
+      result-settable: off
+      audit: off
+      result: off
+      connection: off
+
+---
+
+# 개발
+spring:
+  config:
+    activate:
+      on-profile: dev
+  datasource:
+    url: ~
+    driver-class-name: org.postgresql.Driver
+    username: ~
+    password: ~
+    hikari:
+      maximum-pool-size: 5
+      minimum-idle: 5
+      max-lifetime: 1200000
+      connection-timeout: 10000
+  data:
+    redis:
+      host: ~
+      port: 6379
+
+server:
+  port: 8080
+
+logging:
+  level:
+    root: info
+    com.zaxxer.hikari.HikariConfig: DEBUG
+    com.zaxxer.hikari: TRACE
+    jdbc:
+      sql-only: off
+      sql-timing: debug
+      result-settable: off
+      audit: off
+      result: off
+      connection: off
+
+---
+
+# 운영
+spring:
+  config:
+    activate:
+      on-profile: prd
+  datasource:
+    url: ~
+    driver-class-name: org.postgresql.Driver
+    username: ~
+    password: ~
+    hikari:
+      maximum-pool-size: 5
+      minimum-idle: 5
+      max-lifetime: 1200000
+      connection-timeout: 10000
+  data:
+    redis:
+      host: ~
+      port: 6379
+
+server:
+  port: 8080
+
+logging:
+  level:
+    root: info
+    com.zaxxer.hikari.HikariConfig: DEBUG
+    com.zaxxer.hikari: TRACE
+    jdbc:
+      sql-only: off
+      sql-timing: debug
+      result-settable: off
+      audit: off
+      result: off
+      connection: off

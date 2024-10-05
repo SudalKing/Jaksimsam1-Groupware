@@ -1,0 +1,16 @@
+version: '3.7'
+
+services:
+  # -------- USER DB --------
+  user-db:
+    container_name: user-db
+    image: postgres:12-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=user
+    expose:
+      - "5435"
+    ports:
+      - "5435:5435"

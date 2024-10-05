@@ -1,2 +1,3 @@
 rootProject.name = 'groupware-service'
+include ':common-dto'
 include ':user-service'

@@ -1,7 +1,9 @@
 package com.jaksimsam1.userservice.user.service;
 
+import com.jaksimsam1.commondto.common.exception.ErrorCode;
 import com.jaksimsam1.userservice.user.dto.UserDto;
 import com.jaksimsam1.userservice.user.entity.User;
+import com.jaksimsam1.userservice.user.exception.UserNotFoundException;
 import com.jaksimsam1.userservice.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,9 +21,10 @@ public class UserService {
     private final RedisTemplate redisTemplate;
 
     public Mono<UserDto> findUserById(String userId) {
-        return Mono.fromCallable(() -> userRepository.findByUserId(userId))
+        return Mono.defer(() -> Mono.justOrEmpty(userRepository.findByUserId(userId)))
                 .subscribeOn(Schedulers.boundedElastic())
-                .map(User::toUserDto);
+                .switchIfEmpty(Mono.error(new UserNotFoundException("User Not Found Error", ErrorCode.ENTITY_NOT_FOUND)))
+                .flatMap(user -> Mono.just(user.toUserDto()));
     }
 
     public Flux<User> findAll() {

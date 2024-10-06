@@ -6,6 +6,11 @@ spring:
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
+  jpa:
+    database: postgresql
+    show-sql: true
+    hibernate:
+      ddl-auto: update
 
 ---
 
@@ -15,108 +20,37 @@ spring:
     activate:
       on-profile: local
   datasource:
-    url: ~
+    url: jdbc:postgresql://localhost:5432/user
     driver-class-name: org.postgresql.Driver
-    username: ~
-    password: ~
+    username: user
+    password: password
     hikari:
-      maximum-pool-size: 5
-      minimum-idle: 5
+      maximum-pool-size: 10
+      minimum-idle: 10
       max-lifetime: 1200000
       connection-timeout: 10000
-  data:
-    redis:
-      host: 127.0.0.1
-      port: 6379
+#  data:
+#    redis:
+#      host: 127.0.0.1
+#      port: 6379
 
 server:
   port: 8080
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka
 
 logging:
   level:
     root: info
     com.zaxxer.hikari.HikariConfig: DEBUG
     com.zaxxer.hikari: TRACE
-    jdbc:
-      sql-only: off
-      sql-timing: debug
-      result-settable: off
-      audit: off
-      result: off
-      connection: off
-
----
-
-# 개발
-spring:
-  config:
-    activate:
-      on-profile: dev
-  datasource:
-    url: ~
-    driver-class-name: org.postgresql.Driver
-    username: ~
-    password: ~
-    hikari:
-      maximum-pool-size: 5
-      minimum-idle: 5
-      max-lifetime: 1200000
-      connection-timeout: 10000
-  data:
-    redis:
-      host: ~
-      port: 6379
-
-server:
-  port: 8080
-
-logging:
-  level:
-    root: info
-    com.zaxxer.hikari.HikariConfig: DEBUG
-    com.zaxxer.hikari: TRACE
-    jdbc:
-      sql-only: off
-      sql-timing: debug
-      result-settable: off
-      audit: off
-      result: off
-      connection: off
-
----
-
-# 운영
-spring:
-  config:
-    activate:
-      on-profile: prd
-  datasource:
-    url: ~
-    driver-class-name: org.postgresql.Driver
-    username: ~
-    password: ~
-    hikari:
-      maximum-pool-size: 5
-      minimum-idle: 5
-      max-lifetime: 1200000
-      connection-timeout: 10000
-  data:
-    redis:
-      host: ~
-      port: 6379
-
-server:
-  port: 8080
-
-logging:
-  level:
-    root: info
-    com.zaxxer.hikari.HikariConfig: DEBUG
-    com.zaxxer.hikari: TRACE
-    jdbc:
-      sql-only: off
-      sql-timing: debug
-      result-settable: off
-      audit: off
-      result: off
-      connection: off
+    org:
+      springframework:
+        data:
+          jpa: INFO
+        web: INFO

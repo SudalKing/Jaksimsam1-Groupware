@@ -47,6 +47,7 @@ dependencies {
 
 	runtimeOnly 'org.postgresql:postgresql'
 
+	/* CommonDto 모듈 사용 */
 	implementation project(':common-dto')
 
 	/* QueryDSL */

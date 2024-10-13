@@ -29,13 +29,13 @@ spring:
       minimum-idle: 10
       max-lifetime: 1200000
       connection-timeout: 10000
-#  data:
-#    redis:
-#      host: 127.0.0.1
-#      port: 6379
+  data:
+    redis:
+      host: 127.0.0.1
+      port: 6379
 
 server:
-  port: 8080
+  port: 8081
 
 eureka:
   client:

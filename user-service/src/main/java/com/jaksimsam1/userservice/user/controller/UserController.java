@@ -13,7 +13,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @RequiredArgsConstructor
-@RequestMapping("/user/api/v1")
+@RequestMapping("/user/api")
 @RestController
 public class UserController {
     private final UserService userService;

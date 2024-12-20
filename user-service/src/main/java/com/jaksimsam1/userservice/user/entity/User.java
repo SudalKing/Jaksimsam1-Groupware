@@ -16,18 +16,29 @@ import lombok.NoArgsConstructor;
 @Table(name = "USER")
 public class User {
     @Id
-    @Column(name = "USER_ID")
+    @Column(name = "USER_ID", length = 20, nullable = false)
     private String userId;
+
+    @Column(name = "USERNAME", length = 50, nullable = false)
+    private String username;
+
+    @Column(name = "EMAIL", length = 100, nullable = false)
+    private String email;
+
+    @Column(name = "PASSWORD", nullable = false)
+    private String password;
+
+    // TODO 생년월일
+
+    @Column(name = "GENDER", nullable = false)
+    private String gender;
+
+    @Column(name = "STATUS", nullable = false)
+    private String status;
 
     @Builder
     public User(String userId) {
         this.userId = userId;
     }
 
-    // User -> UserDto
-    public UserDto toUserDto() {
-        return UserDto.builder()
-                .userId(userId)
-                .build();
-    }
 }

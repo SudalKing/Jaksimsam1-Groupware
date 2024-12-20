@@ -13,7 +13,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @RequiredArgsConstructor
-@RequestMapping("/user/api")
+@RequestMapping("/user/api/v1")
 @RestController
 public class UserController {
     private final UserService userService;
@@ -31,7 +31,7 @@ public class UserController {
         return ResponseEntity.ok(userService.findUserById(userId));
     }
 
-    @GetMapping("/search")
+    @GetMapping("/all")
     public ResponseEntity<Flux<UserDto>> findUsers() {
         return ResponseEntity.ok(userService.findAll());
     }

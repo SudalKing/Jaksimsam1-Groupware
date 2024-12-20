@@ -3,6 +3,7 @@ package com.jaksimsam1.userservice.user.service;
 import com.jaksimsam1.commondto.common.exception.ErrorCode;
 import com.jaksimsam1.userservice.user.dto.UserDto;
 import com.jaksimsam1.userservice.user.exception.UserNotFoundException;
+import com.jaksimsam1.userservice.user.repository.UserQueryRepository;
 import com.jaksimsam1.userservice.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +18,7 @@ import reactor.core.scheduler.Schedulers;
 @Service
 public class UserService {
     private final UserRepository userRepository;
+    private final UserQueryRepository userQueryRepository;
     private final ReactiveRedisTemplate<String, UserDto> reactiveRedisTemplate;
 
     public Mono<UserDto> findUserById(String userId) {
@@ -26,7 +28,7 @@ public class UserService {
                                 .subscribeOn(Schedulers.boundedElastic())
                                 .switchIfEmpty(Mono.error(new UserNotFoundException("User Not Found Exception", ErrorCode.ENTITY_NOT_FOUND)))
                                 .flatMap(user -> {
-                                    UserDto userDto = user.toUserDto();
+                                    UserDto userDto = UserDto.of(user);
                                     return reactiveRedisTemplate.opsForValue().set(userId, userDto)
                                             .thenReturn(userDto);
                                 })
@@ -37,6 +39,8 @@ public class UserService {
     public Flux<UserDto> findAll() {
         return Flux.defer(() -> Flux.fromIterable(userRepository.findAll()))
                 .subscribeOn(Schedulers.boundedElastic())
-                .flatMap(user -> Flux.just(user.toUserDto()));
+                .flatMap(user -> Flux.just(UserDto.of(user)));
     }
+
+
 }

@@ -1,5 +1,6 @@
 package com.jaksimsam1.userservice.user.entity;
 
+import com.jaksimsam1.commondto.dto.Gender;
 import com.jaksimsam1.userservice.user.dto.UserDto;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -31,10 +32,13 @@ public class User {
     // TODO 생년월일
 
     @Column(name = "GENDER", nullable = false)
-    private String gender;
+    private Gender gender;
 
     @Column(name = "STATUS", nullable = false)
     private String status;
+
+    @Column(name = "USE_YN", nullable = false)
+    private String useYn;
 
     @Builder
     public User(String userId) {

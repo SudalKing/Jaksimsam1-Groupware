@@ -1,6 +1,5 @@
-package com.jaksimsam1.userservice.config;
+package com.jaksimsam1.userservice.config.redis;
 
-import com.jaksimsam1.userservice.user.dto.UserDto;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
@@ -30,12 +29,12 @@ public class RedisConfig {
     }
 
     @Bean
-    public ReactiveRedisTemplate<String, UserDto> reactiveRedisTemplate(ReactiveRedisConnectionFactory reactiveRedisConnectionFactory) {
-        Jackson2JsonRedisSerializer<UserDto> serializer = new Jackson2JsonRedisSerializer<>(UserDto.class);
-        RedisSerializationContext.RedisSerializationContextBuilder<String, UserDto> builder =
+    public ReactiveRedisTemplate<String, Object> reactiveRedisTemplate(ReactiveRedisConnectionFactory reactiveRedisConnectionFactory) {
+        Jackson2JsonRedisSerializer<Object> serializer = new Jackson2JsonRedisSerializer<>(Object.class);
+        RedisSerializationContext.RedisSerializationContextBuilder<String, Object> builder =
                 RedisSerializationContext.newSerializationContext(new StringRedisSerializer());
 
-        RedisSerializationContext<String, UserDto> context = builder
+        RedisSerializationContext<String, Object> context = builder
                 .value(RedisSerializationContext.SerializationPair.fromSerializer(serializer))
                 .build();
 

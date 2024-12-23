@@ -38,6 +38,6 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
 
     /* AspectJ */
-//    runtimeOnly 'org.aspectj:aspectjweaver:1.9.22.1'
+    runtimeOnly 'org.aspectj:aspectjweaver:1.9.22.1'
     implementation 'aspectj:aspectjrt:1.5.3'
 }

@@ -1,7 +1,7 @@
 package com.jaksimsam1.userservice.user.dto;
 
 import com.jaksimsam1.commondto.dto.Gender;
-import com.jaksimsam1.userservice.user.entity.User;
+import com.jaksimsam1.userservice.user.entity.Users;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -29,15 +29,15 @@ public class UserDto {
         this.useYn = useYn;
     }
 
-    public static UserDto of(User user) {
+    public static UserDto of(Users users) {
         return UserDto.builder()
-                .userId(user.getUserId())
-                .username(user.getUsername())
-                .email(user.getEmail())
-                .password(user.getPassword())
-                .gender(user.getGender())
-                .status(user.getStatus())
-                .useYn(user.getUseYn())
+                .userId(users.getUserId())
+                .username(users.getUsername())
+                .email(users.getEmail())
+                .password(users.getPassword())
+                .gender(users.getGender())
+                .status(users.getStatus())
+                .useYn(users.getUseYn())
                 .build();
     }
 }

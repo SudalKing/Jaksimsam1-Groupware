@@ -1,11 +1,7 @@
 package com.jaksimsam1.userservice.user.entity;
 
 import com.jaksimsam1.commondto.dto.Gender;
-import com.jaksimsam1.userservice.user.dto.UserDto;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,8 +10,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Entity
-@Table(name = "USER")
-public class User {
+@Table(name = "USERS")
+public class Users {
     @Id
     @Column(name = "USER_ID", length = 20, nullable = false)
     private String userId;
@@ -32,6 +28,7 @@ public class User {
     // TODO 생년월일
 
     @Column(name = "GENDER", nullable = false)
+    @Enumerated(value = EnumType.STRING)
     private Gender gender;
 
     @Column(name = "STATUS", nullable = false)
@@ -41,7 +38,7 @@ public class User {
     private String useYn;
 
     @Builder
-    public User(String userId) {
+    public Users(String userId) {
         this.userId = userId;
     }
 

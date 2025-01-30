@@ -1,7 +1,7 @@
 package com.jaksimsam1.userservice.user.repository.query;
 
-import com.jaksimsam1.userservice.user.entity.QUser;
-import com.jaksimsam1.userservice.user.entity.User;
+import com.jaksimsam1.userservice.user.entity.QUsers;
+import com.jaksimsam1.userservice.user.entity.Users;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,10 +15,10 @@ public class UserQueryRepositoryImpl implements UserQueryRepository{
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public List<User> findAllUsersInUse() {
+    public List<Users> findAllUsersInUse() {
         return queryFactory
-                .selectFrom(QUser.user)
-                .where(QUser.user.useYn.eq("Y"))
+                .selectFrom(QUsers.users)
+                .where(QUsers.users.useYn.eq("Y"))
                 .fetch();
     }
 }

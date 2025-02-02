@@ -26,20 +26,45 @@ repositories {
 }
 
 extra["springCloudVersion"] = "2023.0.5"
+extra["kotlinJDSLVersion"] = "3.5.2"
 
 dependencies {
-    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-    implementation("org.springframework.boot:spring-boot-starter-security")
-    implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-webflux")
+    implementation("org.springframework.boot:spring-boot-starter-validation")
+
+    /* Spring Cloud */
+    implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client")
+
+    /* Spring Security */
+    implementation("org.springframework.boot:spring-boot-starter-security")
+
+    /* Kotlin */
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("io.projectreactor.kotlin:reactor-kotlin-extensions")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
-    implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client")
+
+    /* Kotlin JDSL */
+    implementation("com.linecorp.kotlin-jdsl:jpql-dsl:${property("kotlinJDSLVersion")}")
+    implementation("com.linecorp.kotlin-jdsl:jpql-render:${property("kotlinJDSLVersion")}")
+    implementation("com.linecorp.kotlin-jdsl:spring-data-jpa-support:${property("kotlinJDSLVersion")}")
+
+    /* Spring Data JPA */
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+
+    /* CommonDto */
+    implementation(":common-dto")
+
+    /* Swagger */
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2")
+
+    /* Lombok */
     compileOnly("org.projectlombok:lombok")
-    runtimeOnly("org.postgresql:postgresql")
     annotationProcessor("org.projectlombok:lombok")
+
+    /* PostgreSQL */
+    runtimeOnly("org.postgresql:postgresql")
+
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("io.projectreactor:reactor-test")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
@@ -63,6 +88,10 @@ allOpen {
     annotation("jakarta.persistence.Entity")
     annotation("jakarta.persistence.MappedSuperclass")
     annotation("jakarta.persistence.Embeddable")
+}
+
+noArg {
+    annotation("javax.persistence.Entity")
 }
 
 tasks.withType<Test> {

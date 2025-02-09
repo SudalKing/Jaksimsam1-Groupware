@@ -35,9 +35,6 @@ dependencies {
     /* Spring Cloud */
     implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client")
 
-    /* Spring Security */
-    implementation("org.springframework.boot:spring-boot-starter-security")
-
     /* Kotlin */
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("io.projectreactor.kotlin:reactor-kotlin-extensions")

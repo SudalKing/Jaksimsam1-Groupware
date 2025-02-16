@@ -23,12 +23,6 @@ class AuthServiceImpl(
     override fun findAllLikeEmail(
         email: String
     ): List<AuthUsers> {
-        return authRepository.findAll{
-            select(entity(AuthUsers::class))
-                .from(entity(AuthUsers::class))
-                .whereAnd(
-                    path(AuthUsers::email).like("%${email}%"),
-                )
-        }.filterNotNull()
+        return authRepository.findAllLikeEmail(email)
     }
 }

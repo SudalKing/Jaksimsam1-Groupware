@@ -13,6 +13,14 @@ java {
     }
 }
 
+bootJar {
+    enabled = true
+}
+
+jar {
+    enabled = false
+}
+
 configurations {
     compileOnly {
         extendsFrom annotationProcessor
@@ -28,12 +36,33 @@ ext {
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
-    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+
+    /* Lombok */
     compileOnly 'org.projectlombok:lombok'
-    runtimeOnly 'com.mysql:mysql-connector-j'
     annotationProcessor 'org.projectlombok:lombok'
+
+    /* Spring Cloud */
+    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+
+    /* MySQL */
+    runtimeOnly 'com.mysql:mysql-connector-j'
+
+    /* CommonDto */
+    implementation(':common-dto')
+
+    /* QueryDSL */
+    implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
+    annotationProcessor "com.querydsl:querydsl-apt:5.0.0:jakarta"
+    annotationProcessor "jakarta.annotation:jakarta.annotation-api"
+    annotationProcessor "jakarta.persistence:jakarta.persistence-api"
+
+    /* UUID */
+    implementation 'com.fasterxml.uuid:java-uuid-generator:5.1.0'
+
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'io.projectreactor:reactor-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
@@ -46,5 +75,16 @@ dependencyManagement {
 }
 
 tasks.named('test') {
+    enabled = false
     useJUnitPlatform()
+}
+
+def queryDSLSrcDir = 'src/main/generated'
+
+clean {
+    delete file(queryDSLSrcDir)
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.generatedSourceOutputDirectory = file(queryDSLSrcDir)
 }

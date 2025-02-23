@@ -20,10 +20,11 @@ public class UserService {
 
     @RedisCacheable(key = "user:#{#userId}", ttl = 60 * 10)
     public Mono<UserDto> findUserById(String userId) {
-        return Mono.defer(() -> Mono.justOrEmpty(userRepository.findByUserId(userId))
-                .switchIfEmpty(Mono.error(new UserNotFoundException("No Such User: " + userId, ErrorCode.ENTITY_NOT_FOUND))))
+        return Mono.fromCallable(() -> userRepository.findByUserId(userId))
                 .subscribeOn(Schedulers.boundedElastic())
-                .flatMap(user -> Mono.just(UserDto.of(user)));
+                .flatMap(Mono::justOrEmpty)
+                .map(UserDto::of)
+                .switchIfEmpty(Mono.error(new UserNotFoundException("No Such User: " + userId, ErrorCode.ENTITY_NOT_FOUND)));
     }
 
     @RedisCacheable(key = "allUsers")

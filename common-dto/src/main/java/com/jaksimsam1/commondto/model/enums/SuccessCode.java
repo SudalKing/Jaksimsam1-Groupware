@@ -1,7 +1,6 @@
 package com.jaksimsam1.commondto.model.enums;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.jaksimsam1.commondto.model.response.ApiResponse;
 import lombok.Getter;
 
 import java.net.HttpURLConnection;

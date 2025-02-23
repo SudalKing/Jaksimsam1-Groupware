@@ -8,10 +8,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ErrorResponse {
-    private int status;
-    private String message;
-    private String code;
-    private List<FieldError> fieldErrors;
+    private final int status;
+    private final String message;
+    private final String code;
+    private final List<FieldError> fieldErrors;
 
     private ErrorResponse(ErrorCode errorCode, List<FieldError> fieldErrors) {
         this.message = errorCode.getMessage();

@@ -1,5 +1,6 @@
 package com.jaksimsam1.commondto.common.exception;
 
+import com.jaksimsam1.commondto.model.enums.ErrorCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +24,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleMethodArgumentNotInvalidException(MethodArgumentNotValidException e) {
         log.error("handleMethodArgumentNotValidException", e);
-        ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.INVALID_INPUT_VALUE, e.getBindingResult());
+        ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.INVALID_INPUT, e.getBindingResult());
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
@@ -35,7 +36,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public ResponseEntity<ErrorResponse> handleHttpRequestMethodNotSupportException(HttpRequestMethodNotSupportedException e) {
         log.error("handleHttpRequestMethodNotSupportException", e);
-        ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.METHOD_NOT_ALLOWED);
+        ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.BAD_METHOD);
         return new ResponseEntity<>(errorResponse, HttpStatus.METHOD_NOT_ALLOWED);
     }
 
@@ -49,7 +50,7 @@ public class GlobalExceptionHandler {
         log.error("handleBusinessException", e);
         ErrorCode errorCode = e.getErrorCode();
         ErrorResponse errorResponse = ErrorResponse.of(errorCode);
-        return new ResponseEntity<>(errorResponse, HttpStatus.valueOf(errorCode.getCode()));
+        return new ResponseEntity<>(errorResponse, HttpStatus.valueOf(errorCode.getDescription()));
     }
 
     /**
@@ -60,7 +61,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<ErrorResponse> handleAccessDeniedException(AccessDeniedException e) {
         log.error("handleAccessDeniedException", e);
-        ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.ACCESS_DENIED);
+        ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.METHOD_NOT_FOUND);
         return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
     }
 }

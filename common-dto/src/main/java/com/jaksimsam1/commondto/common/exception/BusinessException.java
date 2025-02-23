@@ -1,19 +1,18 @@
 package com.jaksimsam1.commondto.common.exception;
 
-import com.jaksimsam1.commondto.model.enums.ApiResponseCode;
 import com.jaksimsam1.commondto.model.enums.ErrorCode;
 import lombok.Getter;
 
 @Getter
 public class BusinessException extends RuntimeException {
-    private ApiResponseCode errorCode;
+    private ErrorCode errorCode;
 
-    public BusinessException(String message, ApiResponseCode responseCode) {
+    public BusinessException(String message, ErrorCode errorCode) {
         super(message);
-        this.errorCode = responseCode;
+        this.errorCode = errorCode;
     }
 
-    public BusinessException(ApiResponseCode responseCode) {
-        super(responseCode.getMessage());
+    public BusinessException(ErrorCode errorCode) {
+        super(errorCode.getMessage());
     }
 }

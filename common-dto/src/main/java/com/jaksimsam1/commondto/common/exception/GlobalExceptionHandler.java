@@ -18,8 +18,7 @@ public class GlobalExceptionHandler {
     /**
      * Valid 에러 캐치
      * 주로 @RequestBody, @RequestPart 에서 발생
-     * @param e
-     * @return
+     * @param e MethodArgumentNotValidException
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleMethodArgumentNotInvalidException(MethodArgumentNotValidException e) {
@@ -30,8 +29,7 @@ public class GlobalExceptionHandler {
 
     /**
      * 지원하지 않는 HTTP method 호출 시 캐치
-     * @param e
-     * @return
+     * @param e HttpRequestMethodNotSupportedException
      */
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public ResponseEntity<ErrorResponse> handleHttpRequestMethodNotSupportException(HttpRequestMethodNotSupportedException e) {
@@ -42,8 +40,7 @@ public class GlobalExceptionHandler {
 
     /**
      * BusinessException 발생 시 캐치
-     * @param e
-     * @return
+     * @param e BusinessException
      */
     @ExceptionHandler(BusinessException.class)
     public ResponseEntity<ErrorResponse> handleBusinessException(BusinessException e) {
@@ -55,8 +52,7 @@ public class GlobalExceptionHandler {
 
     /**
      * 허가되지 않은 접근 시 캐치
-     * @param e
-     * @return
+     * @param e AccessDeniedException
      */
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<ErrorResponse> handleAccessDeniedException(AccessDeniedException e) {

@@ -1,6 +1,6 @@
 package com.jaksimsam1.userservice.user.service;
 
-import com.jaksimsam1.commondto.common.exception.ErrorCode;
+import com.jaksimsam1.commondto.model.enums.ErrorCode;
 import com.jaksimsam1.userservice.annotation.RedisCacheable;
 import com.jaksimsam1.userservice.user.dto.UserDto;
 import com.jaksimsam1.userservice.user.exception.UserNotFoundException;

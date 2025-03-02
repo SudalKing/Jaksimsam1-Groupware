@@ -4,24 +4,13 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.jaksimsam1.commondto.model.enums.ApiResponseCode;
 import com.jaksimsam1.commondto.model.enums.ErrorCode;
 import com.jaksimsam1.commondto.model.enums.SuccessCode;
-import lombok.Getter;
-import org.springframework.validation.FieldError;
-
-import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@Getter
-public class ApiResponse<T> {
-    private int status;
-    private String message;
-    private T data;
-
-    public ApiResponse(int status, String message, T data) {
-        this.status = status;
-        this.message = message;
-        this.data = data;
-    }
-
+public record ApiResponse<T>(
+        int status,
+        String message,
+        T data
+) {
     // Create 성공 메소드(201)
     public static <T> ApiResponse<T> create() {
         return build(SuccessCode.CREATED, null);

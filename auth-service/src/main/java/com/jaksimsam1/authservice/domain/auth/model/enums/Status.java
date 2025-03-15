@@ -4,13 +4,25 @@ import lombok.Getter;
 
 @Getter
 public enum Status {
-    ACTIVE("active"),
-    LOCKED("locked"),
+    ACTIVE("ACTIVE"),
+    LOCKED("LOCKED"),
+    DELETED("DELETED"),
+    INACTIVE("INACTIVE"),
+    ERROR("ERROR");
     ;
 
     Status(String value) {
         this.value = value;
     }
 
-    private String value;
+    private final String value;
+
+    public static String fromValue(String value) {
+        for (Status status : Status.values()) {
+            if (status.value.equals(value))
+                return status.value;
+        }
+
+        return ERROR.value;
+    }
 }

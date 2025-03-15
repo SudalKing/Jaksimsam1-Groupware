@@ -16,6 +16,11 @@ public record ApiResponse<T>(
         return build(SuccessCode.CREATED, null);
     }
 
+    // Create 성공 메소드(201) 응답 반환
+    public static <T> ApiResponse<T> create(T data) {
+        return build(SuccessCode.CREATED, data);
+    }
+
     // Read 성곰 메소드(200)
     public static <T> ApiResponse<T> read(T data) {
         return build(SuccessCode.OK, data);
@@ -39,5 +44,4 @@ public record ApiResponse<T>(
     private static <T> ApiResponse<T> build(ApiResponseCode responseCode, T data) {
         return new ApiResponse<>(responseCode.getStatus(), responseCode.getMessage(), data);
     }
-
 }

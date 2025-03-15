@@ -4,7 +4,9 @@ import com.jaksimsam1.userservice.user.entity.Users;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.query.Param;
 
-public interface UserJPARepository extends JpaRepository<Users, String> {
+import java.util.UUID;
 
-    Users findByUserId(@Param("userId") String userId);
+public interface UserJPARepository extends JpaRepository<Users, UUID> {
+
+    Users findByUserId(@Param("userId") UUID userId);
 }

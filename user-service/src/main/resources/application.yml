@@ -10,7 +10,7 @@ spring:
     database: postgresql
     show-sql: true
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: validate
 
 ---
 
@@ -29,12 +29,14 @@ spring:
       minimum-idle: 10
       max-lifetime: 1200000
       connection-timeout: 10000
+  # Redis
   data:
     redis:
       host: 127.0.0.1
       port: 6379
-#  kafka:
-#    bootstrap-servers: http://localhost:1111
+  # Kafka
+  kafka:
+    bootstrap-servers: localhost:8099,localhost:8100
 
 server:
   port: 8081

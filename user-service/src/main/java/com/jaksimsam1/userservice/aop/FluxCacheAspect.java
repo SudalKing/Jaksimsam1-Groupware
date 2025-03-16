@@ -27,8 +27,15 @@ public class FluxCacheAspect {
         Duration ttl = Duration.ofSeconds(fluxCacheable.ttl());
 
         return redisCacheUtil.getCacheList(key, Object.class)
-                .switchIfEmpty((Flux<?>) result)
                 .collectList()
-                .flatMapMany(list -> redisCacheUtil.setCacheList(key, Flux.fromIterable(list), ttl));
+                .flatMapMany(cachedList -> {
+                    if (!cachedList.isEmpty()) {
+                        return Flux.fromIterable(cachedList);
+                    }
+                    return ((Flux<?>) result)
+                            .collectList()
+                            .flatMapMany(newList -> redisCacheUtil.deleteCache(key)
+                                    .thenMany(redisCacheUtil.setCacheList(key, Flux.fromIterable(newList), ttl)));
+                });
     }
 }

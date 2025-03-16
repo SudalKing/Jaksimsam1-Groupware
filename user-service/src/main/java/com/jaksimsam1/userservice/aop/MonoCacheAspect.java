@@ -27,8 +27,9 @@ public class MonoCacheAspect {
         Duration ttl = Duration.ofSeconds(monoCacheable.ttl());
 
         return redisCacheUtil.getCache(key, Object.class)
+                .flatMap(Mono::just)
                 .switchIfEmpty((Mono<?>) result)
-                .flatMap(value -> redisCacheUtil.setCache(key, value, ttl))
-                .then(Mono.just(result));
+                .flatMap(value -> redisCacheUtil.setCache(key, value, ttl)
+                        .thenReturn(value));
     }
 }

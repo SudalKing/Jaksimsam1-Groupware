@@ -47,14 +47,6 @@ public class UserService {
                 .flatMap(user -> Flux.just(UserDto.of(user)));
     }
 
-
-    public Flux<UserDto> findAllUsersInUse() {
-        return Flux.defer(() -> Flux.fromIterable(userRepository.findAllUsersInUse())
-                .switchIfEmpty(Flux.error(new UserNotFoundException("No Such Users In Use", ErrorCode.ENTITY_NOT_FOUND))))
-                .subscribeOn(Schedulers.boundedElastic())
-                .flatMap(users -> Flux.just(UserDto.of(users)));
-    }
-
     public Mono<ApiResponse<Void>> createUser(UserCreateRequest request) {
         Users user = Users.builder()
                 .username(request.getUsername())

@@ -1,4 +1,4 @@
-package com.jaksimsam1.userservice.config;
+package com.jaksimsam1.userservice.config.orm;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;

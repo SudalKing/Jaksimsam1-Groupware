@@ -51,7 +51,7 @@ public class JwtProvider {
         return Jwts.builder()
                 .claims(claims)
                 .issuedAt(new Date())
-                .expiration(new Date(System.currentTimeMillis() + expiration))
+                .expiration(new Date(System.currentTimeMillis() + expiration * 1000))
                 .signWith(secretKey)
                 .compact();
     }

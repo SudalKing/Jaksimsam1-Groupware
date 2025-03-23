@@ -1,5 +1,3 @@
-version: '3.7'
-
 services:
   # -------- USER DB --------
   user-db:
@@ -10,15 +8,26 @@ services:
       - POSTGRES_USER=user
       - POSTGRES_PASSWORD=password
       - POSTGRES_DB=users
-    expose:
-      - "5432"
     ports:
       - "5432:5432"
-    command: -c wal_level=logical -p 5432
+    command: -c wal_level=logical
 
-  # -------- USER REDIS --------
+  # -------- AUTH DB --------
+  auth-db:
+    container_name: auth-db
+    image: postgres:12-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=auth
+    ports:
+      - "5433:5432"
+    command: -c wal_level=logical
+
+  # -------- REDIS --------
   user-redis:
-    container_name: user-redis
+    container_name: redis
     image: redis:latest
     restart: always
     ports:
@@ -30,23 +39,72 @@ services:
     labels:
       - "name=redis"
       - "mode=standalone"
-  # -------- KAFKA --------
+
+  # -------- ZOOKEEPER --------
   zookeeper:
     image: confluentinc/cp-zookeeper:7.2.1
     container_name: zookeeper
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
+    networks:
+      - kafka-net
+
+  # -------- KAFKA --------
   kafka1:
     image: confluentinc/cp-kafka:7.2.1
     container_name: kafka1
     ports:
-      - "8097:8097"
+      - "8099:8099"
     depends_on:
       - zookeeper
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_ADVERTISED_LISTENERS: EXTERNAL://localhost:8099,INTERNAL://kafka3:9092
+      KAFKA_ADVERTISED_LISTENERS: EXTERNAL://localhost:8099,INTERNAL://kafka1:9092
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: EXTERNAL:PLAINTEXT,INTERNAL:PLAINTEXT
+      KAFKA_DEFAULT_REPLICATION_FACTOR: 2
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 2
+      KAFKA_NUM_PARTITIONS: 2
       KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
     restart: always
+    networks:
+      - kafka-net
+
+  kafka2:
+    image: confluentinc/cp-kafka:7.2.1
+    container_name: kafka2
+    ports:
+      - "8100:8100"
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 2
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: EXTERNAL://localhost:8100,INTERNAL://kafka2:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: EXTERNAL:PLAINTEXT,INTERNAL:PLAINTEXT
+      KAFKA_DEFAULT_REPLICATION_FACTOR: 2
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 2
+      KAFKA_NUM_PARTITIONS: 2
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+    restart: always
+    networks:
+      - kafka-net
+
+  # -------- KAFKA UI --------
+  kafka-ui:
+    image: provectuslabs/kafka-ui
+    container_name: kafka-ui
+    ports:
+      - "8200:8080"
+    environment:
+      - KAFKA_CLUSTERS_0_NAME=local
+      - KAFKA_CLUSTERS_0_BOOTSTRAP_SERVERS=kafka1:9092,kafka2:9092
+    depends_on:
+      - kafka1
+      - kafka2
+    networks:
+      - kafka-net
+
+networks:
+  kafka-net:
+    driver: bridge

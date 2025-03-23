@@ -4,25 +4,25 @@ import lombok.Getter;
 
 @Getter
 public enum Role {
-    GUEST("guest"),
-    USER("user"),
-    MANAGER("manager"),
-    ADMIN("admin"),
-    NOMATCH("nomatch")
+    GUEST("GUEST"),
+    USER("USER"),
+    MANAGER("MANAGER"),
+    ADMIN("ADMIN"),
+    NOMATCH("NOMATCH")
     ;
 
-    private String value;
+    private final String value;
 
     Role(String value) {
         this.value = value;
     }
 
-    public static Role fromValue(String value) {
+    public static String fromValue(String value) {
         for (Role role : values()) {
             if (role.value.equals(value)) {
-                return role;
+                return role.value;
             }
         }
-        return NOMATCH;
+        return NOMATCH.value;
     }
 }

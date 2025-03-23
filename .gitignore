@@ -37,4 +37,4 @@ out/
 .vscode/
 
 ### Local Redis ###
-redis
+redis/data

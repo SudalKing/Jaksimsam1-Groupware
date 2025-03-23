@@ -5,7 +5,7 @@ import com.jaksimsam1.commondto.model.response.ApiResponse;
 import com.jaksimsam1.userservice.application.query.dto.UserDto;
 import com.jaksimsam1.userservice.common.annotation.FluxCacheable;
 import com.jaksimsam1.userservice.common.annotation.MonoCacheable;
-import com.jaksimsam1.userservice.domain.user.exception.UserNotFoundException;
+import com.jaksimsam1.userservice.common.exception.UserNotFoundException;
 import com.jaksimsam1.userservice.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

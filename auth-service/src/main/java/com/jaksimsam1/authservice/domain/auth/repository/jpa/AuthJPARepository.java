@@ -1,6 +1,6 @@
 package com.jaksimsam1.authservice.domain.auth.repository.jpa;
 
-import com.jaksimsam1.authservice.domain.auth.entity.Auth;
+import com.jaksimsam1.authservice.infra.persistence.entity.Auth;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.UUID;

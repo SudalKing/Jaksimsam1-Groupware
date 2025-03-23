@@ -3,7 +3,7 @@ package com.jaksimsam1.userservice.presentation.query.controller;
 import com.jaksimsam1.commondto.model.response.ApiResponse;
 import com.jaksimsam1.userservice.application.query.dto.UserDto;
 import com.jaksimsam1.userservice.application.query.service.UserQueryService;
-import com.jaksimsam1.userservice.domain.user.exception.UserNotFoundException;
+import com.jaksimsam1.userservice.common.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

@@ -2,10 +2,10 @@ package com.jaksimsam1.authservice.infra.messaging.consumer;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jaksimsam1.authservice.infra.messaging.model.topic.KafkaConsumerGroup;
+import com.jaksimsam1.authservice.infra.messaging.model.topic.KafkaTopics;
 import com.jaksimsam1.authservice.presentation.command.request.AuthCreateRequest;
 import com.jaksimsam1.authservice.application.command.event.UserCreatedEventConsumer;
-import com.jaksimsam1.commondto.common.kafka.KafkaConsumerGroup;
-import com.jaksimsam1.commondto.common.kafka.KafkaTopics;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;

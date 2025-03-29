@@ -1,8 +1,8 @@
 package com.jaksimsam1.authservice.application.query.service;
 
 import com.jaksimsam1.authservice.common.exception.JwtNotFoundException;
+import com.jaksimsam1.authservice.common.model.enums.ErrorCode;
 import com.jaksimsam1.authservice.infra.persistence.entity.RefreshToken;
-import com.jaksimsam1.commondto.model.enums.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.ReactiveRedisTemplate;

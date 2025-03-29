@@ -36,18 +36,6 @@ public class AuthCommandService {
     private final PasswordEncoder passwordEncoder;
 
     public Mono<ApiResponse<Void>> createAuth(AuthCreateRequest request) {
-//        Auth auth = Auth.builder()
-//                .userId(request.getUserId())
-//                .email(request.getEmail())
-//                .password(passwordEncoder.encode(request.getPassword()))
-//                .status(Status.ACTIVE.getValue())
-//                .role(Role.USER.getValue())
-//                .build();
-//        Mono<Auth> savedAuth = authRepository.save(auth);
-//        log.debug("Created auth: {}", savedAuth);
-//
-//        return Mono.just(ApiResponse.create());
-
         return Mono.fromCallable(() -> passwordEncoder.encode(request.getPassword()))
                 .subscribeOn(Schedulers.boundedElastic())
                 .flatMap(encodedPassword -> {
@@ -76,18 +64,6 @@ public class AuthCommandService {
      * @return
      */
     public Mono<LoginResponse> login(LoginRequest request) {
-//        return Mono.fromCallable(() -> authRepository.findByEmail(request.getEmail()))
-//                .subscribeOn(Schedulers.boundedElastic())
-//                .flatMap(savedAuth -> {
-//                    if (!passwordEncoder.matches(request.getPassword(), savedAuth.getPassword())) {
-//                        return Mono.error(new InvalidPasswordException("Invalid Password", ErrorCode.INVALID_INPUT));
-//                    }
-//                    String accessToken = jwtService.createAccessToken(savedAuth.getEmail());
-//                    String refreshToken = jwtService.createRefreshToken(savedAuth.getEmail());
-//
-//                    return refreshTokenCommandService.save(request.getEmail(), refreshToken)
-//                            .thenReturn(new LoginResponse(accessToken, refreshToken));
-//                });
         return authRepository.findByEmail(request.getEmail())
                 .switchIfEmpty(Mono.error(new InvalidPasswordException("Invalid Password", ErrorCode.INVALID_INPUT)))
                 .flatMap(savedAuth ->

@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.4.2'
     id 'io.spring.dependency-management' version '1.1.7'
+    id 'nu.studer.jooq' version '9.0'
 }
 
 group = 'com.jaksimsam1'
@@ -33,12 +34,15 @@ repositories {
 
 ext {
     set('springCloudVersion', "2024.0.0")
+    set('jooqVersion', "3.19.19")
 }
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+    /* R2DBC */
+    implementation 'org.springframework.boot:spring-boot-starter-data-r2dbc'
 
     /* Postgresql */
     runtimeOnly 'org.postgresql:postgresql'
@@ -57,14 +61,13 @@ dependencies {
     implementation 'org.springframework.kafka:spring-kafka'
     testImplementation 'org.springframework.kafka:spring-kafka-test'
 
-    /* CommonDto */
-    implementation project(':common-dto')
-
-    /* QueryDSL */
-    implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
-    annotationProcessor "com.querydsl:querydsl-apt:5.0.0:jakarta"
-    annotationProcessor "jakarta.annotation:jakarta.annotation-api"
-    annotationProcessor "jakarta.persistence:jakarta.persistence-api"
+    /* Jooq */
+    implementation 'org.springframework.boot:spring-boot-starter-jooq'
+    /* Jooq Generator */
+    jooqGenerator 'org.postgresql:postgresql'
+    jooqGenerator "org.jooq:jooq:${jooqVersion}"
+    jooqGenerator "org.jooq:jooq-codegen:${jooqVersion}"
+    jooqGenerator "org.jooq:jooq-meta:${jooqVersion}"
 
     /* UUID */
     implementation 'com.fasterxml.uuid:java-uuid-generator:5.1.0'
@@ -77,6 +80,7 @@ dependencies {
     /* Test */
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'io.projectreactor:reactor-test'
+    runtimeOnly 'org.postgresql:r2dbc-postgresql'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
@@ -91,12 +95,61 @@ tasks.named('test') {
     useJUnitPlatform()
 }
 
-def queryDSLSrcDir = 'src/main/generated'
+jooq {
+    version("${jooqVersion}")
 
-clean {
-    delete file(queryDSLSrcDir)
+    configurations {
+        create("main") {
+            generationTool {
+                jdbc {
+                    driver = "org.postgresql.Driver"
+                    url = System.getenv("AUTH_DB_URL") ?: "jdbc:postgresql://localhost:5433/auth"
+                    user = System.getenv("AUTH_DB_USER") ?: "user"
+                    password = System.getenv("AUTH_DB_PASSWORD") ?: "password"
+                }
+
+                generator {
+                    name = "org.jooq.codegen.DefaultGenerator"
+
+                    database {
+                        name = "org.jooq.meta.postgres.PostgresDatabase"
+                        inputSchema = "public"
+                        includes = ".*"
+                    }
+
+                    generate {
+                        daos = true
+                        records = true
+                        fluentSetters = true
+                        javaTimeTypes = true
+                        deprecated = false
+                        pojos = true
+                        interfaces = true
+                    }
+
+                    target {
+                        packageName = "com.jaksimsam1.authservice.infra.persistence.jooq"
+                        directory = "build/generated-src/jooq/main"
+                    }
+                }
+            }
+        }
+    }
 }
 
-tasks.withType(JavaCompile).configureEach {
-    options.generatedSourceOutputDirectory = file(queryDSLSrcDir)
+sourceSets {
+    main {
+        java {
+            srcDirs('src/main/java', "build/generated-src/jooq/main")	// 생성된 코드를 프로젝트 소스로 인식하도로 설정
+        }
+    }
+}
+
+// JOOQ 코드 생성이 컴파일 전에 실행되도록 설정
+tasks.named('compileJava').configure {
+    it.dependsOn(tasks.named('generateJooq'))
+}
+
+tasks.named('compileTestJava').configure {
+    it.dependsOn(tasks.named('generateJooq'))
 }

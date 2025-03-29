@@ -1,6 +1,6 @@
 package com.jaksimsam1.userservice.application.command.service;
 
-import com.jaksimsam1.commondto.common.kafka.KafkaTopics;
+import com.jaksimsam1.userservice.infra.messaging.topic.KafkaTopics;
 import com.jaksimsam1.userservice.infra.persistence.entity.Users;
 import com.jaksimsam1.userservice.domain.user.model.enums.Gender;
 import com.jaksimsam1.userservice.presentation.command.request.CreateUserRequest;

@@ -1,7 +1,7 @@
 package com.jaksimsam1.userservice.common.exception;
 
-import com.jaksimsam1.commondto.common.exception.BusinessException;
-import com.jaksimsam1.commondto.model.enums.ErrorCode;
+
+import com.jaksimsam1.userservice.common.model.enums.ErrorCode;
 
 public class UserNotFoundException extends BusinessException {
 

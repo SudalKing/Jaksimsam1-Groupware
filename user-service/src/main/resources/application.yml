@@ -11,6 +11,8 @@ spring:
     show-sql: true
     hibernate:
       ddl-auto: validate
+  main:
+    web-application-type: reactive
 
 ---
 

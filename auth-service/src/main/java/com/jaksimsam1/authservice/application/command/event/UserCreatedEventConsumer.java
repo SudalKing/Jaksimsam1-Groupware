@@ -15,6 +15,10 @@ public class UserCreatedEventConsumer {
 
     public void handle(AuthCreateRequest request) {
         log.info("[Handler] Handle request {}", request);
-        authCommandService.createAuth(request);
+
+        authCommandService.createAuth(request)
+                .doOnSuccess(response -> log.info("[Handler] Auth created {}", response))
+                .doOnError(error -> log.error("[Handler]Error creating Auth", error))
+                .subscribe();
     }
 }

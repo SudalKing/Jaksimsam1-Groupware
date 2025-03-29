@@ -1,8 +1,8 @@
 package com.jaksimsam1.userservice.application.query.handler;
 
-import com.jaksimsam1.commondto.model.response.ApiResponse;
 import com.jaksimsam1.userservice.application.query.dto.UserDto;
 import com.jaksimsam1.userservice.application.query.service.UserQueryService;
+import com.jaksimsam1.userservice.common.model.response.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;

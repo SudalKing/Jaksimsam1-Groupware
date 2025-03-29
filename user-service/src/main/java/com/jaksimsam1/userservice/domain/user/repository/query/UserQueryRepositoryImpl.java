@@ -1,6 +1,6 @@
 package com.jaksimsam1.userservice.domain.user.repository.query;
 
-import com.jaksimsam1.userservice.user.entity.QUsers;
+import com.jaksimsam1.userservice.infra.persistence.entity.QUsers;
 import com.jaksimsam1.userservice.infra.persistence.entity.Users;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;

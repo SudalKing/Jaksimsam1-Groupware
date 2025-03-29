@@ -1,7 +1,7 @@
 package com.jaksimsam1.userservice.application.command.handler;
 
-import com.jaksimsam1.commondto.model.response.ApiResponse;
 import com.jaksimsam1.userservice.application.command.service.UserCommandService;
+import com.jaksimsam1.userservice.common.model.response.ApiResponse;
 import com.jaksimsam1.userservice.presentation.command.request.CreateUserRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

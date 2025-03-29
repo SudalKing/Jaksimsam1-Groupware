@@ -43,23 +43,29 @@ public class AuthCommandService {
 //                .status(Status.ACTIVE.getValue())
 //                .role(Role.USER.getValue())
 //                .build();
-//        Auth savedAuth = authRepository.save(auth);
+//        Mono<Auth> savedAuth = authRepository.save(auth);
 //        log.debug("Created auth: {}", savedAuth);
 //
 //        return Mono.just(ApiResponse.create());
+
         return Mono.fromCallable(() -> passwordEncoder.encode(request.getPassword()))
                 .subscribeOn(Schedulers.boundedElastic())
                 .flatMap(encodedPassword -> {
                     Auth auth = Auth.builder()
                             .userId(request.getUserId())
                             .email(request.getEmail())
-                            .password(passwordEncoder.encode(request.getPassword()))
+                            .password(encodedPassword)
                             .status(Status.ACTIVE.getValue())
                             .role(Role.USER.getValue())
                             .build();
 
+                    log.info("Creating auth: {}", auth);
                     return authRepository.save(auth)
-                            .doOnSuccess(savedAuth -> log.info("Created Auth: {}", savedAuth))
+                            .doOnNext(savedAuth -> {
+                                savedAuth.markPersisted();
+                                log.info("Created Auth: {}", savedAuth);
+                            })
+                            .doOnError(throwable -> log.error("Error creating Auth", throwable))
                             .thenReturn(ApiResponse.create());
                 });
     }

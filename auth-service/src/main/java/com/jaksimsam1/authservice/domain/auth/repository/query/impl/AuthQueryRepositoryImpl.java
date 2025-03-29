@@ -16,10 +16,10 @@ public class AuthQueryRepositoryImpl implements AuthQueryRepository {
 
     private final DSLContext dsl;
 
-    public Mono<Auth> findByEmail(String email) {
-        return Mono.from(dsl.selectFrom(AUTH)
-                .where(AUTH.EMAIL.eq(email)))
-                .map(record -> record.into(Auth.class));
-    }
+//    public Mono<Auth> findByEmail(String email) {
+//        return Mono.from(dsl.selectFrom(AUTH)
+//                .where(AUTH.EMAIL.eq(email)))
+//                .map(record -> record.into(Auth.class));
+//    }
 
 }

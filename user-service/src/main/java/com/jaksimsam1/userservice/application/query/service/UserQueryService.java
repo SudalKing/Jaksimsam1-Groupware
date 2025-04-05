@@ -27,7 +27,7 @@ public class UserQueryService {
                 .subscribeOn(Schedulers.boundedElastic())
                 .switchIfEmpty(Mono.error(new UserNotFoundException("No Search User: " + userId, ErrorCode.ENTITY_NOT_FOUND)))
                 .map(UserDto::of)
-                .flatMap(userDto ->  Mono.just(ApiResponse.create(userDto)));
+                .flatMap(userDto ->  Mono.just(ApiResponse.read(userDto)));
     }
 
     @FluxCacheable(key = "user:list", ttl = 600)

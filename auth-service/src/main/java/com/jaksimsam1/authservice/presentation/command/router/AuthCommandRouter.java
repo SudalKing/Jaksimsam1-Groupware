@@ -20,9 +20,10 @@ public class AuthCommandRouter {
     private final AuthCommandHandler authCommandHandler;
 
     @Bean
-    public RouterFunction<ServerResponse> loginRoutes() {
+    public RouterFunction<ServerResponse> authRoutes() {
         return RouterFunctions.route()
                 .POST("/auth/api/v1/login", accept(MediaType.APPLICATION_JSON), authCommandHandler::login)
+                .POST("/auth/api/v1/refresh", accept(MediaType.APPLICATION_JSON), authCommandHandler::refresh)
                 .build();
     }
 }

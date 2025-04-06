@@ -35,6 +35,7 @@ repositories {
 ext {
     set('springCloudVersion', "2024.0.0")
     set('jooqVersion', "3.19.19")
+    set('testContainerVersion', "1.19.7")
 }
 
 dependencies {
@@ -82,6 +83,12 @@ dependencies {
     testImplementation 'io.projectreactor:reactor-test'
     runtimeOnly 'org.postgresql:r2dbc-postgresql'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+    /* Test Container */
+    testImplementation "org.testcontainers:junit-jupiter:${testContainerVersion}"
+    testImplementation "org.testcontainers:r2dbc:${testContainerVersion}"
+    testImplementation "org.testcontainers:kafka:${testContainerVersion}"
+    testImplementation "org.testcontainers:postgresql:${testContainerVersion}"
 }
 
 dependencyManagement {
@@ -91,7 +98,7 @@ dependencyManagement {
 }
 
 tasks.named('test') {
-    enabled = false
+    enabled = true
     useJUnitPlatform()
 }
 

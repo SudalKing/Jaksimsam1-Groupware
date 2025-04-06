@@ -16,40 +16,40 @@ import java.util.UUID;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @ToString
-@Table(name = "AUTH")
+@Table(name = "auth")
 public class Auth implements Persistable<UUID> {
 
     @Id
-    @Column("AUTH_ID")
+    @Column("auth_id")
     private UUID authId;
 
-    @Column("USER_ID")
+    @Column("user_id")
     private UUID userId;
 
     @Email
     @NotNull(message = "Email cannot be null")
-    @Column("EMAIL")
+    @Column("email")
     private String email;
 
-    @Column("PASSWORD")
+    @Column("password")
     private String password;
 
-    @Column("STATUS")
+    @Column("status")
     private String status;
 
-    @Column("ROLE")
+    @Column("role")
     private String role;
 
-    @Column("LAST_LOGIN")
+    @Column("last_login")
     private LocalDateTime lastLogin;
 
-    @Column("LAST_PASSWORD_CHANGE")
+    @Column("last_password_change")
     private LocalDateTime lastPasswordChange;
 
-    @Column("LAST_STATUS_MODIFIED")
+    @Column("last_status_modified")
     private LocalDateTime lastStatusModified;
 
-    @Column("CREATED_AT")
+    @Column("created_at")
     private LocalDateTime createdAt;
 
     @Transient

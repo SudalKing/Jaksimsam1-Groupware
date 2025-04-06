@@ -35,7 +35,7 @@ public class AuthCommandService {
 
     private final PasswordEncoder passwordEncoder;
 
-    public Mono<ApiResponse<Void>> createAuth(AuthCreateRequest request) {
+    public Mono<Auth> createAuth(AuthCreateRequest request) {
         return Mono.fromCallable(() -> passwordEncoder.encode(request.getPassword()))
                 .subscribeOn(Schedulers.boundedElastic())
                 .flatMap(encodedPassword -> {
@@ -53,8 +53,7 @@ public class AuthCommandService {
                                 savedAuth.markPersisted();
                                 log.info("Created Auth: {}", savedAuth);
                             })
-                            .doOnError(throwable -> log.error("Error creating Auth", throwable))
-                            .thenReturn(ApiResponse.create());
+                            .doOnError(throwable -> log.error("Error creating Auth", throwable));
                 });
     }
 

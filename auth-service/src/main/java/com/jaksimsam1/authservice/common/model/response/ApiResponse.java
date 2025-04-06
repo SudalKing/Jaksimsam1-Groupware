@@ -44,4 +44,9 @@ public record ApiResponse<T>(
     private static <T> ApiResponse<T> build(ApiResponseCode responseCode, T data) {
         return new ApiResponse<>(responseCode.getStatus(), responseCode.getMessage(), data);
     }
+
+    @Override
+    public T data() {
+        return data;
+    }
 }

@@ -1,64 +1,59 @@
 package com.jaksimsam1.authservice.infra.persistence.entity;
 
 import com.fasterxml.uuid.Generators;
-import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
-import org.springframework.data.annotation.CreatedDate;
+import lombok.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
+import org.springframework.data.domain.Persistable;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.Table;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@Table(name = "AUTH",
-        uniqueConstraints = {
-                @UniqueConstraint(columnNames = {"EMAIL"}, name = "UNIQUE_KEY_EMAIL")
-        })
-@Entity
-public class Auth {
+@ToString
+@Table(name = "auth")
+public class Auth implements Persistable<UUID> {
 
     @Id
-    @JdbcTypeCode(SqlTypes.UUID)
-    @Column(name = "AUTH_ID", nullable = false, updatable = false)
+    @Column("auth_id")
     private UUID authId;
 
-    @JdbcTypeCode(SqlTypes.UUID)
-    @Column(name = "USER_ID", nullable = false, updatable = false)
+    @Column("user_id")
     private UUID userId;
 
     @Email
-    @NotNull(message = "Email can not be null")
-    @Column(name = "EMAIL", length = 100, nullable = false)
+    @NotNull(message = "Email cannot be null")
+    @Column("email")
     private String email;
 
-    @Column(name = "PASSWORD", nullable = false)
+    @Column("password")
     private String password;
 
-    @Column(name = "STATUS", length = 20, nullable = false)
+    @Column("status")
     private String status;
 
-    @Column(name = "ROLE", length = 20, nullable = false)
+    @Column("role")
     private String role;
 
-    @Column(name = "LAST_LOGIN", nullable = false)
+    @Column("last_login")
     private LocalDateTime lastLogin;
 
-    @Column(name = "LAST_PASSWORD_CHANGE", nullable = false)
+    @Column("last_password_change")
     private LocalDateTime lastPasswordChange;
 
-    @Column(name = "LAST_STATUS_MODIFIED", nullable = false)
+    @Column("last_status_modified")
     private LocalDateTime lastStatusModified;
 
-    @CreatedDate
-    @Column(name = "CREATED_AT", nullable = false, updatable = false)
+    @Column("created_at")
     private LocalDateTime createdAt;
+
+    @Transient
+    private boolean isNew;
 
     @Builder
     public Auth(UUID userId, String email, String password, String status, String role) {
@@ -72,5 +67,20 @@ public class Auth {
         this.lastPasswordChange = LocalDateTime.now();
         this.lastStatusModified = LocalDateTime.now();
         this.createdAt = LocalDateTime.now();
+        this.isNew = true;
+    }
+
+    @Override
+    public UUID getId() {
+        return this.authId;
+    }
+
+    @Override
+    public boolean isNew() {
+        return this.isNew;
+    }
+
+    public void markPersisted() {
+        this.isNew = false;
     }
 }

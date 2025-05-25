@@ -6,24 +6,27 @@ spring:
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
-  jpa:
-    database: postgresql
-    show-sql: true
-    hibernate:
-      ddl-auto: validate
   main:
     web-application-type: reactive
 
+logging:
+  level:
+    root: info
+    com.zaxxer.hikari.HikariConfig: DEBUG
+    com.zaxxer.hikari: TRACE
+    org:
+      springframework:
+        web: INFO
+
 ---
 
-# 로컬
+# Local
 spring:
   config:
     activate:
       on-profile: local
-  datasource:
-    url: jdbc:postgresql://localhost:5433/auth
-    driver-class-name: org.postgresql.Driver
+  r2dbc:
+    url: r2dbc:postgresql://localhost:5433/auth
     username: user
     password: password
     hikari:
@@ -31,6 +34,8 @@ spring:
       minimum-idle: 10
       max-lifetime: 1200000
       connection-timeout: 10000
+  jooq:
+    sql-dialect: POSTGRES
   data:
     redis:
       host: 127.0.0.1
@@ -49,16 +54,48 @@ eureka:
     service-url:
       defaultZone: http://localhost:8761/eureka
 
-logging:
-  level:
-    root: info
-    com.zaxxer.hikari.HikariConfig: DEBUG
-    com.zaxxer.hikari: TRACE
-    org:
-      springframework:
-        data:
-          jpa: INFO
-        web: INFO
+auth:
+  jwt:
+    secret-key: U2VjcmV0S2V5UGFzc3dvcmQxMjM0NTY3ODkwMTIzNDU2Nzg5
+    access-token-expiration-time: 3600 # 1시간
+    refresh-token-expiration-time: 604800 # 7일
+
+---
+
+# Test
+spring:
+  config:
+    activate:
+      on-profile: test
+  r2dbc:
+    url: ...
+    username: ...
+    password: ...
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 10
+      max-lifetime: 1200000
+      connection-timeout: 10000
+  jooq:
+    sql-dialect: POSTGRES
+  data:
+    redis:
+      host: 127.0.0.1
+      port: 6379
+  # Kafka
+  kafka:
+    bootstrap-servers: localhost:8099,localhost:8100
+
+server:
+  port: 8082
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+    enabled: false
 
 auth:
   jwt:

@@ -1,6 +1,9 @@
 package com.jaksimsam1.authservice.application.command.service;
 
 import com.jaksimsam1.authservice.application.query.service.RefreshTokenQueryService;
+import com.jaksimsam1.authservice.common.exception.InvalidPasswordException;
+import com.jaksimsam1.authservice.common.model.enums.ErrorCode;
+import com.jaksimsam1.authservice.common.model.response.ApiResponse;
 import com.jaksimsam1.authservice.domain.auth.model.enums.Role;
 import com.jaksimsam1.authservice.domain.auth.model.enums.Status;
 import com.jaksimsam1.authservice.domain.auth.repository.AuthRepository;
@@ -12,10 +15,9 @@ import com.jaksimsam1.authservice.presentation.command.request.LoginRequest;
 import com.jaksimsam1.authservice.presentation.command.request.TokenRefreshRequest;
 import com.jaksimsam1.authservice.presentation.command.response.LoginResponse;
 import com.jaksimsam1.authservice.presentation.command.response.TokenRefreshResponse;
-import com.jaksimsam1.commondto.model.enums.ErrorCode;
-import com.jaksimsam1.commondto.model.response.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
@@ -31,18 +33,28 @@ public class AuthCommandService {
     private final RefreshTokenCommandService refreshTokenCommandService;
     private final RefreshTokenQueryService refreshTokenQueryService;
 
-    public Mono<ApiResponse<Void>> createAuth(AuthCreateRequest request) {
-        Auth auth = Auth.builder()
-                .userId(request.getUserId())
-                .email(request.getEmail())
-                .password(request.getPassword())
-                .status(Status.ACTIVE.getValue())
-                .role(Role.USER.getValue())
-                .build();
-        Auth savedAuth = authRepository.save(auth);
-        log.debug("Created auth: {}", savedAuth);
+    private final PasswordEncoder passwordEncoder;
 
-        return Mono.just(ApiResponse.create());
+    public Mono<Auth> createAuth(AuthCreateRequest request) {
+        return Mono.fromCallable(() -> passwordEncoder.encode(request.getPassword()))
+                .subscribeOn(Schedulers.boundedElastic())
+                .flatMap(encodedPassword -> {
+                    Auth auth = Auth.builder()
+                            .userId(request.getUserId())
+                            .email(request.getEmail())
+                            .password(encodedPassword)
+                            .status(Status.ACTIVE.getValue())
+                            .role(Role.USER.getValue())
+                            .build();
+
+                    log.info("Creating auth: {}", auth);
+                    return authRepository.save(auth)
+                            .doOnNext(savedAuth -> {
+                                savedAuth.markPersisted();
+                                log.info("Created Auth: {}", savedAuth);
+                            })
+                            .doOnError(throwable -> log.error("Error creating Auth", throwable));
+                });
     }
 
     /**
@@ -51,15 +63,22 @@ public class AuthCommandService {
      * @return
      */
     public Mono<LoginResponse> login(LoginRequest request) {
-        return Mono.fromCallable(() -> authRepository.findByEmailAndPassword(request.getEmail(), request.getPassword()))
-                .subscribeOn(Schedulers.boundedElastic())
-                .flatMap(auth -> {
-                    String accessToken = jwtService.createAccessToken(auth.getEmail());
-                    String refreshToken = jwtService.createRefreshToken(auth.getEmail());
+        return authRepository.findByEmail(request.getEmail())
+                .switchIfEmpty(Mono.error(new InvalidPasswordException("Invalid Password", ErrorCode.INVALID_INPUT)))
+                .flatMap(savedAuth ->
+                        Mono.fromCallable(() -> passwordEncoder.matches(request.getPassword(), savedAuth.getPassword()))
+                                .subscribeOn(Schedulers.boundedElastic())
+                                .flatMap(matches -> {
+                                    if (!matches) {
+                                        return Mono.error(new InvalidPasswordException("Invalid Password", ErrorCode.INVALID_INPUT));
+                                    }
+                                    String accessToken = jwtService.createAccessToken(savedAuth.getEmail());
+                                    String refreshToken = jwtService.createRefreshToken(savedAuth.getEmail());
 
-                    return refreshTokenCommandService.save(request.getEmail(), refreshToken)
-                            .thenReturn(new LoginResponse(accessToken, refreshToken));
-                });
+                                    return refreshTokenCommandService.save(request.getEmail(), refreshToken)
+                                            .thenReturn(new LoginResponse(accessToken, refreshToken));
+                                })
+                );
     }
 
     /**

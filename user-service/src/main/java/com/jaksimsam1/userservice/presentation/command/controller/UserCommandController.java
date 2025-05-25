@@ -1,7 +1,7 @@
 package com.jaksimsam1.userservice.presentation.command.controller;
 
-import com.jaksimsam1.commondto.model.response.ApiResponse;
 import com.jaksimsam1.userservice.application.command.handler.UserCommandHandler;
+import com.jaksimsam1.userservice.common.model.response.ApiResponse;
 import com.jaksimsam1.userservice.presentation.command.request.CreateUserRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;

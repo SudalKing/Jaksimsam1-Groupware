@@ -1,11 +1,11 @@
 package com.jaksimsam1.userservice.application.query.service;
 
-import com.jaksimsam1.commondto.model.enums.ErrorCode;
-import com.jaksimsam1.commondto.model.response.ApiResponse;
 import com.jaksimsam1.userservice.application.query.dto.UserDto;
 import com.jaksimsam1.userservice.common.annotation.FluxCacheable;
 import com.jaksimsam1.userservice.common.annotation.MonoCacheable;
 import com.jaksimsam1.userservice.common.exception.UserNotFoundException;
+import com.jaksimsam1.userservice.common.model.enums.ErrorCode;
+import com.jaksimsam1.userservice.common.model.response.ApiResponse;
 import com.jaksimsam1.userservice.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -27,7 +27,7 @@ public class UserQueryService {
                 .subscribeOn(Schedulers.boundedElastic())
                 .switchIfEmpty(Mono.error(new UserNotFoundException("No Search User: " + userId, ErrorCode.ENTITY_NOT_FOUND)))
                 .map(UserDto::of)
-                .flatMap(userDto ->  Mono.just(ApiResponse.create(userDto)));
+                .flatMap(userDto ->  Mono.just(ApiResponse.read(userDto)));
     }
 
     @FluxCacheable(key = "user:list", ttl = 600)
